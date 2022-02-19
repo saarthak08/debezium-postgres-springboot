@@ -25,19 +25,32 @@ class ConnectorConfigController() {
 
   @GetMapping("")
   fun getConnectors(): ResponseEntity<Any> {
-    val response = restTemplate.getForEntity(connectorBaseUrl, Object::class.java);
-    logger.info(response.body.toString());
-    return ResponseEntity(response.body, HttpStatus.OK);
+    val response =
+      restTemplate.getForEntity("$connectorBaseUrl?expand=info&expand=status", Object::class.java);
+    return ResponseEntity(response.body, response.statusCode);
   }
 
-  @GetMapping("/set-config")
-  fun setConnectorConfig(): ResponseEntity<Any> {
+  @GetMapping("/add")
+  fun addConnector(): ResponseEntity<Any> {
     val file = ClassPathResource("connector-config.json").file;
     val text = String(Files.readAllBytes(file.toPath()));
     val headers = HttpHeaders()
     headers.contentType = MediaType.APPLICATION_JSON
     val requestEntity = HttpEntity(text, headers)
     val response = restTemplate.postForEntity(connectorBaseUrl, requestEntity, Object::class.java);
+    return ResponseEntity(response, response.statusCode);
+  }
+
+  @GetMapping("/delete")
+  fun deleteConnector(): ResponseEntity<Any> {
+    val headers = HttpHeaders()
+    headers.contentType = MediaType.APPLICATION_JSON
+    val requestEntity = HttpEntity(null, headers)
+    val response = restTemplate.delete(
+      "$connectorBaseUrl/example-debezium-postgres-connector",
+      requestEntity,
+      Object::class.java
+    );
     return ResponseEntity(response, HttpStatus.OK);
   }
 }

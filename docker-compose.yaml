@@ -34,6 +34,8 @@ services:
       - "postgres"
       - "-c"
       - "wal_level=logical"
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
 
   connect:
     image: debezium/connect

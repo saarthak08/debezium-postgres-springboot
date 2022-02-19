@@ -11,7 +11,7 @@ import java.io.IOException
 class KafkaConsumerService {
   private val logger = LoggerFactory.getLogger(KafkaConsumerService::class.java)
 
-  @KafkaListener(topics = ["example-debezium-postgres-connector"], groupId = "2") @Throws(
+  @KafkaListener(topics = ["example.public.users"], groupId = "2") @Throws(
     IOException::class
   ) fun consume(message: String?) {
     logger.info(String.format("*** Consumed message -> %s", message))
